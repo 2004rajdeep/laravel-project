@@ -1,0 +1,21 @@
+# Laravel
+/vendor/
+/node_modules/
+/public/build/
+/storage/*.key
+.env
+
+# Laravel runtime files
+.phpunit.result.cache
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SQLite database
+database/*.sqlite
+database/*.sqlite3
