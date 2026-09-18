@@ -19,7 +19,7 @@ function MovieApp() {
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [movieDetails, setMovieDetails] = useState(null);
     const [detailsLoading, setDetailsLoading] = useState(false);
-    const defaultApiKey = import.meta.env.VITE_OMDB_API_KEY || 'caa7fdb9';
+    const defaultApiKey = import.meta.env.VITE_OMDB_API_KEY || '';
     const [customApiKey, setCustomApiKey] = useLocalStorage('omdbApiKey', '');
     const omdbApiKey = (customApiKey && customApiKey.trim()) ? customApiKey.trim() : defaultApiKey;
     const [showSettings, setShowSettings] = useState(false);
