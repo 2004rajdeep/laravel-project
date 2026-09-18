@@ -14,9 +14,11 @@
 
 </head>
 
-<body class="bg-gray-100 min-h-screen py-10">
+<body class="bg-gray-100 min-h-screen flex flex-col">
 
-<div class="max-w-2xl mx-auto px-4">
+@include('partials.navbar')
+
+<div class="max-w-2xl mx-auto px-4 py-10 w-full flex-1">
 
     <h1 class="text-3xl font-bold text-center mb-8">🔗 URL Shortener</h1>
 
