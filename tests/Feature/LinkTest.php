@@ -43,6 +43,34 @@ class LinkTest extends TestCase
     }
 
     /**
+     * Test that submitting the same URL twice via the web form reuses the
+     * existing short code and does NOT create a duplicate DB record.
+     */
+    public function test_web_form_deduplicates_same_url(): void
+    {
+        $url = 'https://example.com/duplicate-test';
+
+        // First submission — should create a new link
+        $first = $this->post('/shorten', ['url' => $url]);
+        $first->assertRedirect(route('home'));
+        $first->assertSessionHas('success');
+        $this->assertDatabaseCount('links', 1);
+
+        $existingCode = Link::first()->short_code;
+
+        // Second submission of the same URL — should reuse the existing code
+        $second = $this->post('/shorten', ['url' => $url]);
+        $second->assertRedirect(route('home'));
+        $second->assertSessionHas('success');
+
+        // Still only one record in the database
+        $this->assertDatabaseCount('links', 1);
+
+        // The session success URL must contain the same short code
+        $this->assertStringContainsString($existingCode, session('success'));
+    }
+
+    /**
      * Test validation failure when providing invalid URL.
      */
     public function test_shorten_requires_valid_url(): void

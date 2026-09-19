@@ -17,7 +17,24 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+'default' => (function () {
+        // Priority 1: Railway provides DATABASE_URL or MYSQL_URL
+        $databaseUrl = env('DATABASE_URL') ?: env('MYSQL_URL');
+        if ($databaseUrl) {
+            if (str_starts_with($databaseUrl, 'postgresql://') || str_starts_with($databaseUrl, 'postgres://')) {
+                return 'pgsql';
+            }
+            if (str_starts_with($databaseUrl, 'mysql://')) {
+                return 'mysql';
+            }
+        }
+        // Priority 2: Explicit DB_CONNECTION env var
+        if ($conn = env('DB_CONNECTION')) {
+            return $conn;
+        }
+        // Priority 3: Default to sqlite for local development
+        return 'sqlite';
+    })(),
 
     /*
     |--------------------------------------------------------------------------

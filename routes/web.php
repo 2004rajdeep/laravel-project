@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LinkController::class, 'index'])->name('home');
 
-Route::post('/shorten', [LinkController::class, 'store'])->name('shorten');
+Route::post('/shorten', [LinkController::class, 'store'])
+    ->middleware('throttle:60,1')
+    ->name('shorten');
 
 Route::get('/react-app', function () {
     return view('react-app');

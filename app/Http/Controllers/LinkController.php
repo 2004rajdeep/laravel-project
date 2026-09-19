@@ -24,7 +24,7 @@ class LinkController extends Controller
 
     }
 
-    // Save new link (web form)
+    // Save new link (web form) — deduplicates: reuses existing short code if URL already exists
 
     public function store(Request $request)
 
@@ -36,15 +36,31 @@ class LinkController extends Controller
 
         ]);
 
-        $data['original_url'] = $data['url'];
+        $originalUrl = $data['url'];
 
-        $data['short_code']   = Str::random(6);
+        // Deduplicate: if URL already exists, reuse its short code
+        $existingLink = Link::where('original_url', $originalUrl)->first();
 
-        Link::create($data);
+        if ($existingLink) {
+
+            return redirect()->route('home')
+
+                ->with('success', url('/') . '/' . $existingLink->short_code);
+
+        }
+
+        // New URL: generate a unique short code
+        $shortCode = $this->generateUniqueShortCode();
+
+        Link::create([
+            'original_url' => $originalUrl,
+            'short_code'   => $shortCode,
+            'clicks'       => 0,
+        ]);
 
         return redirect()->route('home')
 
-            ->with('success', url('/') . '/' . $data['short_code']);
+            ->with('success', url('/') . '/' . $shortCode);
 
     }
 
